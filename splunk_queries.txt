@@ -1,0 +1,15 @@
+# Failed Login Tracker - Splunk SPL Queries
+
+# Failed Logins (Event Code: 4625)
+index=* source="WinEventLog:Security" EventCode=4625
+| stats count by Account_Name, ComputerName, _time
+| sort - count
+
+# Failed Logins Over Time
+index=* source="WinEventLog:Security" EventCode=4625
+| timechart span=1h count by Account_Name
+
+# Alert: Excessive Failed Logins
+index=* source="WinEventLog:Security" EventCode=4625
+| stats count by Account_Name, ComputerName
+| where count > 10
